@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Price Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #ebeef3;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 420px;
+            margin: 60px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #222;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 6px;
+            border: 1px solid #888;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            background: #007bff;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-top: 18px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #005ec9;
+        }
+        .price-box {
+            margin-top: 20px;
+            text-align: center;
+            background: #d9ffde;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 18px;
+            border: 1px solid #72dd87;
+            color: #046b18;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Predict Property Price</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Location:</label>
+        <select name="location" required>
+            <option value="" disabled selected>Select Location</option>
+            {% for loc in locations %}
+                <option value="{{ loc }}">{{ loc }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Property Type:</label>
+        <select name="property_type" required>
+            <option value="" disabled selected>Select Type</option>
+            {% for type in property_types %}
+                <option value="{{ type }}">{{ type }}</option>
+            {% endfor %}
+        </select>
+
+        <label>BHK:</label>
+        <input type="number" name="bhk" min="1" required>
+
+        <label>Area (sqft):</label>
+        <input type="number" name="area_sqft" step="0.1" required>
+
+        <button type="submit">Predict Price</button>
+    </form>
+
+    {% if predicted_price %}
+        <div class="price-box">
+            Estimated Price: <strong>₹ {{ predicted_price|floatformat:2 }}</strong>
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
