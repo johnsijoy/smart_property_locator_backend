@@ -15,11 +15,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 # --- Buyer Registration Serializer ---
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, validators=[validate_password])
-
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ('id', 'email', 'password')  # remove 'username'
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         # Only buyers can register from frontend

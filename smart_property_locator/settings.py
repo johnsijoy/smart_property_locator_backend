@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'properties',
 ]
 
+
 # Custom User model
 AUTH_USER_MODEL = 'accounts.User'
 

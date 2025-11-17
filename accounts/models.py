@@ -2,18 +2,29 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from django.utils import timezone
 
+# -----------------------------
 # Custom User Manager
+# -----------------------------
 class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
+    def create_user(self, email, password=None, username=None, **extra_fields):
+        """
+        Create and save a regular User with email, optional username, and password.
+        """
         if not email:
             raise ValueError("The Email field must be set")
+        
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+
+        # Allow username to be optional for existing users
+        user = self.model(email=email, username=username, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password=None, **extra_fields):
+    def create_superuser(self, email, password=None, username=None, **extra_fields):
+        """
+        Create and save a SuperUser with email, optional username, and password.
+        """
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -23,12 +34,15 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(email, password, **extra_fields)
+        return self.create_user(email, password=password, username=username, **extra_fields)
 
-
+# -----------------------------
 # Custom User Model
+# -----------------------------
 class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(unique=True, max_length=255)
+    username = models.CharField(max_length=150, blank=True, null=True, unique=False)
+    email = models.EmailField(unique=True)
+    role = models.CharField(max_length=20, default='buyer')
     first_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
     is_staff = models.BooleanField(default=False)
@@ -38,13 +52,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = [] # keep empty to avoid breaking existing data
 
     def __str__(self):
         return self.email
 
-
-# Contact Model (optional)
+# -----------------------------
+# Contact Model
+# -----------------------------
 class Contact(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
