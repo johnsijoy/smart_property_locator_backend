@@ -138,16 +138,20 @@ class LoginView(APIView):
         if serializer.is_valid():
             user = serializer.validated_data['user']
 
-            # Check user role
-            if getattr(user, 'role', None) == 'buyer':
-                refresh = RefreshToken.for_user(user)
-                return Response({
-                    "message": "Buyer login successful",
-                    "role": user.role,
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
-                })
-            else:
-                return Response({"detail": "Only buyers can log in here"}, status=status.HTTP_403_FORBIDDEN)
+            # Only allow buyers in this view
+            if user.role != 'buyer':
+                return Response(
+                    {"detail": "Only buyers can log in here"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                "message": "Buyer login successful",
+                "role": user.role,
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+                "username": user.username,   # include username for frontend
+            })
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

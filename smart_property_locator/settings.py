@@ -61,13 +61,18 @@ REST_FRAMEWORK = {
 # ----------------------------
 # CORS
 # ----------------------------
+# CORS
+# CORS
 CORS_ALLOW_ALL_ORIGINS = False
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://smart-property-locator-frontend.vercel.app",
 ]
+
 CORS_ALLOW_CREDENTIALS = True
+
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -79,6 +84,7 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -86,6 +92,7 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+
 
 # ----------------------------
 # Middleware
