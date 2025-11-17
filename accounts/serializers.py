@@ -15,15 +15,17 @@ class UserSerializer(serializers.ModelSerializer):
 
 # --- Buyer Registration Serializer ---
 class RegisterSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True)  # username is now required
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password')  # include username
+        fields = ('id', 'username', 'email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         # Only buyers can register from frontend
         user = User.objects.create_user(
-            username=validated_data.get('username'),  # use .get() to avoid KeyError
+            username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
             role='buyer'
@@ -39,15 +41,14 @@ class ContactSerializer(serializers.ModelSerializer):
 
 # --- Login Serializer (for admin and buyer) ---
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(write_only=True, required=True)
 
     def validate(self, data):
         username = data.get('username')
         password = data.get('password')
 
         user = authenticate(username=username, password=password)
-
         if not user:
             raise serializers.ValidationError("Invalid username or password")
 
