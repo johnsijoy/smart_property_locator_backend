@@ -17,13 +17,13 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'password')  # remove 'username'
+        fields = ('id', 'username', 'email', 'password')  # include username
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         # Only buyers can register from frontend
         user = User.objects.create_user(
-            username=validated_data['username'],
+            username=validated_data.get('username'),  # use .get() to avoid KeyError
             email=validated_data['email'],
             password=validated_data['password'],
             role='buyer'
