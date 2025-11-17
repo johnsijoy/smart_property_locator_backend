@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-o&uosc7i9tve%*9^s3kuv(8112c-h2s)2td*1(-6%(8b9u9j$s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "smart-property-locator-backend-2.onrender.com",
+    "smart-property-locator-frontend.vercel.app",
+    "localhost",
+    "127.0.0.1",
+]
 
 
 # Application definition
@@ -60,8 +65,12 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOWED_ORIGINS = [
+    "http://smart-property-locator-frontend.vercel.app",
+    "https://smart-property-locator-frontend.vercel.app",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
     "http://localhost:3001",
-     "http://127.0.0.1:3001", # React frontend default port
+    "http://127.0.0.1:3001",
 ]
 
 CORS_ALLOW_HEADERS = [
