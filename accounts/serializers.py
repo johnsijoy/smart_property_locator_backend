@@ -41,16 +41,16 @@ class ContactSerializer(serializers.ModelSerializer):
 
 # --- Login Serializer (for admin and buyer) ---
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True)  # use email instead of username
     password = serializers.CharField(write_only=True, required=True)
 
     def validate(self, data):
-        username = data.get('username')
+        email = data.get('email')
         password = data.get('password')
 
-        user = authenticate(username=username, password=password)
+        user = authenticate(email=email, password=password)  # authenticate with email
         if not user:
-            raise serializers.ValidationError("Invalid username or password")
+            raise serializers.ValidationError("Invalid email or password")
 
         data['user'] = user
         return data
