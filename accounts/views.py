@@ -41,27 +41,46 @@ class ContactListView(generics.ListAPIView):
     permission_classes = [IsAdminUser]
 
 
-class ReplyToContactView(generics.UpdateAPIView):
-    queryset = Contact.objects.all()
-    serializer_class = ContactSerializer
+class ReplyToContactView(APIView):
+    permission_classes = [IsAdminUser]
 
-    def update(self, request, *args, **kwargs):
-        contact = self.get_object()
-        reply_text = request.data.get('reply', '')
+    def put(self, request, pk):
+        """
+        Admin replies to a user query.
+        Expects: { "reply": "Your reply message" }
+        """
+        try:
+            contact = Contact.objects.get(pk=pk)
+        except Contact.DoesNotExist:
+            return Response({"error": "Contact not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        reply_text = request.data.get("reply", "").strip()
+        if not reply_text:
+            return Response({"error": "Reply cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Save reply
         contact.reply = reply_text
         contact.replied = True
         contact.save()
 
-        # Send email automatically
-        send_mail(
-            subject="Reply to your query",
-            message=f"Dear {contact.name},\n\n{reply_text}\n\nBest Regards,\nSmart Property Locator Team",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[contact.email],
-            fail_silently=False,
-        )
+        # Send email safely
+        try:
+            send_mail(
+                subject=f"Reply to your query: {contact.subject or 'No Subject'}",
+                message=f"Dear {contact.name},\n\n{reply_text}\n\nBest Regards,\nSmart Property Locator Team",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[contact.email],
+                fail_silently=False,  # will raise exception if fails
+            )
+        except Exception as e:
+            # Log error but still respond with success
+            print(f"Email send failed: {e}")
 
-        return Response({"message": "Reply sent successfully!"}, status=status.HTTP_200_OK)
+        serializer = ContactSerializer(contact)
+        return Response({
+            "message": "Reply sent successfully!",
+            "contact": serializer.data
+        }, status=status.HTTP_200_OK)
 
 
 class DeleteContactView(DestroyAPIView):

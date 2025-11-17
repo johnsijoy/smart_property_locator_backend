@@ -98,18 +98,15 @@ CORS_ALLOW_METHODS = [
 # Middleware
 # ----------------------------
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 # ----------------------------
 # URL & Templates
 # ----------------------------
@@ -197,3 +194,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "vennilaramesh240@gmail.com"
 EMAIL_HOST_PASSWORD = "iler eoii omme qjmn"  # your app password
+DEFAULT_FROM_EMAIL = "Smart Property Locator <vennilaramesh240@gmail.com>"
