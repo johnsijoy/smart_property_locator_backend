@@ -9,6 +9,9 @@ from django.contrib.auth import get_user_model, authenticate
 from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
 from django.conf import settings
+from rest_framework import generics
+from rest_framework.generics import DestroyAPIView
+
 
 # Serializers (assumes you have RegisterSerializer and LoginSerializer)
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, ContactSerializer
@@ -120,6 +123,12 @@ class RegisterView(APIView):
             return Response({"message": "Buyer registered successfully!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+class DeleteContactView(DestroyAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+    permission_classes = [IsAdminUser]
 
 # Buyer login
 class LoginView(APIView):
