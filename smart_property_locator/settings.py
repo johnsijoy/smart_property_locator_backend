@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'properties',
 ]
 
+ALLOWED_HOSTS = ["smart-property-locator-backend-2.onrender.com", "127.0.0.1", "localhost"]
+
 
 # Custom User model
 AUTH_USER_MODEL = 'accounts.User'
