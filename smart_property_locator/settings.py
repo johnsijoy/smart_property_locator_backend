@@ -17,12 +17,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ----------------------------
 SECRET_KEY = 'django-insecure-o&uosc7i9tve%*9^s3kuv(8112c-h2s)2td*1(-6%(8b9u9j$s'
 DEBUG = True
-ALLOWED_HOSTS = [
-    "smart-property-locator-backend-2.onrender.com",
-    "smart-property-locator-frontend.vercel.app",
-    "localhost",
-    "127.0.0.1",
-]
 
 # ----------------------------
 # Installed Apps
